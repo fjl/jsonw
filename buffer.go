@@ -15,7 +15,7 @@ To create a JSON output, create a [Buffer] and call methods on it.
 	})
 
 	// Get the JSON.
-	b.Output()
+	b.Output()   // -> {"key1":1,"key2":"value"}
 */
 package jsonw
 
