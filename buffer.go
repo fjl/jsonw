@@ -86,7 +86,7 @@ func (b *Buffer) Bool(v bool) {
 func (b *Buffer) String(s string) {
 	b.beginValue()
 	defer b.endValue()
-	b.appendQuotedString(s)
+	b.buf = AppendQuotedString(b.buf, s)
 }
 
 // HexBytes appends a hex-string as bytes.
@@ -219,7 +219,7 @@ func (b *Buffer) Key(s string) {
 		b.buf = append(b.buf, ',')
 		fallthrough
 	case objectKeyFirst:
-		b.appendQuotedString(s)
+		b.buf = AppendQuotedString(b.buf, s)
 		b.buf = append(b.buf, ':')
 		b.state = objectValue
 	default:
