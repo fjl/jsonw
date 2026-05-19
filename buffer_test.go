@@ -374,6 +374,18 @@ var encoderTests = []encoderTest{
 		output: `{"k":"v\nv"}`,
 	},
 	{
+		name: "raw",
+		fn: func(b *Buffer) {
+			b.Object(func() {
+				b.Key("a")
+				b.RawValue([]byte(`{"a":1}` + "\n"))
+				b.Key("b")
+				b.RawValue([]byte("  2"))
+			})
+		},
+		output: `{"a":{"a":1},"b":2}`,
+	},
+	{
 		name: "empty-object",
 		fn: func(b *Buffer) {
 			b.Object(func() {})

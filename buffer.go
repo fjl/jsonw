@@ -20,6 +20,7 @@ To create a JSON output, create a [Buffer] and call methods on it.
 package jsonw
 
 import (
+	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"math/big"
@@ -53,6 +54,14 @@ func (b *Buffer) Reset() {
 // Output returns the written JSON bytes.
 func (b *Buffer) Output() []byte {
 	return b.buf[:len(b.buf):len(b.buf)]
+}
+
+// Raw appends a pre-encoded value.
+// Note there are no validity checks on the value.
+func (b *Buffer) RawValue(v []byte) {
+	b.beginValue()
+	defer b.endValue()
+	b.buf = append(b.buf, bytes.TrimSpace(v)...)
 }
 
 // Null appends a JSON null.
