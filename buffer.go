@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
+	"math"
 	"math/big"
 	"strconv"
 )
@@ -135,7 +136,15 @@ func (b *Buffer) Int64(v int64) {
 func (b *Buffer) Float64(v float64) {
 	b.beginValue()
 	defer b.endValue()
-	b.buf = strconv.AppendFloat(b.buf, v, 'f', -1, 64)
+
+	// Match encoding/json and use 'e' for very small or very large magnitudes.
+	// However, we don't normalize the exponent to trim zeros.
+	abs := math.Abs(v)
+	format := byte('f')
+	if abs != 0 && (abs < 1e-6 || abs >= 1e21) {
+		format = 'e'
+	}
+	b.buf = strconv.AppendFloat(b.buf, v, format, -1, 64)
 }
 
 // BigInt appends a decimal bigint.

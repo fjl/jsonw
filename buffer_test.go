@@ -209,6 +209,34 @@ var encoderTests = []encoderTest{
 		output: `0.0001`,
 	},
 	{
+		name: "float64-tiny-uses-exp",
+		fn: func(b *Buffer) {
+			b.Float64(1e-30)
+		},
+		output: `1e-30`,
+	},
+	{
+		name: "float64-huge-uses-exp",
+		fn: func(b *Buffer) {
+			b.Float64(1e30)
+		},
+		output: `1e+30`,
+	},
+	{
+		name: "float64-exp-single-digit",
+		fn: func(b *Buffer) {
+			b.Float64(1e-9)
+		},
+		output: `1e-09`,
+	},
+	{
+		name: "float64-just-below-exp-boundary",
+		fn: func(b *Buffer) {
+			b.Float64(1e20)
+		},
+		output: `100000000000000000000`,
+	},
+	{
 		name: "bigint",
 		fn: func(b *Buffer) {
 			v, _ := new(big.Int).SetString("123456789012345678901234567890", 10)
