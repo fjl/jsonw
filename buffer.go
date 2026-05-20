@@ -30,7 +30,7 @@ import (
 type bufferState byte
 
 const (
-	initial bufferState = 1 << iota
+	initial bufferState = iota
 	objectKey
 	objectKeyFirst
 	objectValue
@@ -52,7 +52,16 @@ func (b *Buffer) Reset() {
 }
 
 // Output returns the written JSON bytes.
+//
+// This can only be called at the top-level encoding context.
+// Using Output from within a call to Array or Object will panic.
+//
+// The return value aliases the internal buffer, and may change content
+// after Reset and/or future calls to encoder methods.
 func (b *Buffer) Output() []byte {
+	if b.state != initial {
+		panic("Output called in array or object context")
+	}
 	return b.buf[:len(b.buf):len(b.buf)]
 }
 
