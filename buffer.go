@@ -133,10 +133,22 @@ func (b *Buffer) Int64(v int64) {
 }
 
 // Float64 appends a float64.
+//
+// NaN and ±Inf have no representation in standard JSON. They are written
+// as "NaN", "Infinity", "-Infinity" (like JSON5). The caller must handle these
+// values explicitly.
 func (b *Buffer) Float64(v float64) {
 	b.beginValue()
 	defer b.endValue()
 
+	if math.IsInf(v, 0) {
+		if v < 0 {
+			b.buf = append(b.buf, "-Infinity"...)
+		} else {
+			b.buf = append(b.buf, "Infinity"...)
+		}
+		return
+	}
 	// Match encoding/json and use 'e' for very small or very large magnitudes.
 	// However, we don't normalize the exponent to trim zeros.
 	abs := math.Abs(v)

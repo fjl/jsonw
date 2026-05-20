@@ -237,6 +237,20 @@ var encoderTests = []encoderTest{
 		output: `100000000000000000000`,
 	},
 	{
+		name: "float64-positive-infinity",
+		fn: func(b *Buffer) {
+			b.Float64(math.Inf(1))
+		},
+		output: `Infinity`,
+	},
+	{
+		name: "float64-negative-infinity",
+		fn: func(b *Buffer) {
+			b.Float64(math.Inf(-1))
+		},
+		output: `-Infinity`,
+	},
+	{
 		name: "bigint",
 		fn: func(b *Buffer) {
 			v, _ := new(big.Int).SetString("123456789012345678901234567890", 10)
