@@ -58,7 +58,7 @@ func (b *Buffer) Output() []byte {
 	return b.buf[:len(b.buf):len(b.buf)]
 }
 
-// Raw appends a pre-encoded value.
+// RawValue appends a pre-encoded value.
 // Note there are no validity checks on the value.
 func (b *Buffer) RawValue(v []byte) {
 	b.beginValue()
@@ -141,7 +141,7 @@ func (b *Buffer) BigInt(v *big.Int) {
 	b.buf = v.Append(b.buf, 10)
 }
 
-// BigInt appends a bigint as a hex-encoded string.
+// HexBigInt appends a bigint as a hex-encoded string.
 func (b *Buffer) HexBigInt(v *big.Int) {
 	b.beginValue()
 	defer b.endValue()
