@@ -272,6 +272,13 @@ var encoderTests = []encoderTest{
 		output: `[1,"x",[2,3]]`,
 	},
 	{
+		name: "value-no-html-escape",
+		fn: func(b *Buffer) {
+			b.MustValue("<script>&</script>")
+		},
+		output: `"<script>&</script>"`,
+	},
+	{
 		name: "value-error",
 		fn: func(b *Buffer) {
 			err := b.Value(make(chan int))

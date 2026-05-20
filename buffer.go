@@ -169,6 +169,7 @@ func (b *Buffer) Value(v any) error {
 	if b.enc == nil || b.encw.buf != b {
 		b.encw = &encWriter{buf: b}
 		b.enc = json.NewEncoder(b.encw)
+		b.enc.SetEscapeHTML(false)
 	}
 
 	mark := len(b.buf)
