@@ -59,11 +59,15 @@ func (b *Buffer) Output() []byte {
 }
 
 // RawValue appends a pre-encoded value.
-// Note there are no validity checks on the value.
+// Note there are no validity checks on the value, except that it must not be empty.
 func (b *Buffer) RawValue(v []byte) {
+	v = bytes.TrimSpace(v)
+	if len(v) == 0 {
+		panic("RawValue called with empty value")
+	}
 	b.beginValue()
 	defer b.endValue()
-	b.buf = append(b.buf, bytes.TrimSpace(v)...)
+	b.buf = append(b.buf, v...)
 }
 
 // Null appends a JSON null.

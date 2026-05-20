@@ -438,6 +438,20 @@ var encoderTests = []encoderTest{
 		output: `[]`,
 	},
 	{
+		name: "raw-empty-panic",
+		fn: func(b *Buffer) {
+			b.RawValue(nil)
+		},
+		expectPanic: "RawValue called with empty value",
+	},
+	{
+		name: "raw-whitespace-only-panic",
+		fn: func(b *Buffer) {
+			b.RawValue([]byte("   \n\t"))
+		},
+		expectPanic: "RawValue called with empty value",
+	},
+	{
 		name: "object-value-panic",
 		fn: func(b *Buffer) {
 			b.Object(func() {
