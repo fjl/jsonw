@@ -267,6 +267,44 @@ var encoderTests = []encoderTest{
 		output: ``,
 	},
 	{
+		name: "value-error-in-array-first",
+		fn: func(b *Buffer) {
+			b.Array(func() {
+				if err := b.Value(make(chan int)); err == nil {
+					panic("expected encode error")
+				}
+				b.Int64(42)
+			})
+		},
+		output: `[42]`,
+	},
+	{
+		name: "value-error-in-array-rest",
+		fn: func(b *Buffer) {
+			b.Array(func() {
+				b.Int64(1)
+				if err := b.Value(make(chan int)); err == nil {
+					panic("expected encode error")
+				}
+				b.Int64(42)
+			})
+		},
+		output: `[1,42]`,
+	},
+	{
+		name: "value-error-in-object",
+		fn: func(b *Buffer) {
+			b.Object(func() {
+				b.Key("k")
+				if err := b.Value(make(chan int)); err == nil {
+					panic("expected encode error")
+				}
+				b.Int64(7)
+			})
+		},
+		output: `{"k":7}`,
+	},
+	{
 		name: "must-value-panic",
 		fn: func(b *Buffer) {
 			b.MustValue(make(chan int))

@@ -157,13 +157,17 @@ func (b *Buffer) Value(v any) error {
 		b.encw = &encWriter{buf: b}
 		b.enc = json.NewEncoder(b.encw)
 	}
+	mark := len(b.buf)
 	b.beginValue()
-	err := b.enc.Encode(v)
-	if err == nil && len(b.buf) > 0 && b.buf[len(b.buf)-1] == '\n' {
+	if err := b.enc.Encode(v); err != nil {
+		b.buf = b.buf[:mark]
+		return err
+	}
+	if len(b.buf) > 0 && b.buf[len(b.buf)-1] == '\n' {
 		b.buf = b.buf[:len(b.buf)-1]
 	}
 	b.endValue()
-	return err
+	return nil
 }
 
 // MustValue appends an arbitrary value marshaled by encoding/json.
