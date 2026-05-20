@@ -146,12 +146,20 @@ func (b *Buffer) BigInt(v *big.Int) {
 }
 
 // HexBigInt appends a bigint as a hex-encoded string.
+// Negative values are written as "-0x...".
 func (b *Buffer) HexBigInt(v *big.Int) {
 	b.beginValue()
 	defer b.endValue()
 
-	b.buf = append(b.buf, `"0x`...)
+	// Reserve placeholder bytes for the "0x" prefix.
+	b.buf = append(b.buf, '"', 0, 0)
+	mark := len(b.buf) - 2
 	b.buf = v.Append(b.buf, 16)
+	if v.Sign() < 0 {
+		copy(b.buf[mark:], "-0x")
+	} else {
+		b.buf[mark], b.buf[mark+1] = '0', 'x'
+	}
 	b.buf = append(b.buf, '"')
 }
 

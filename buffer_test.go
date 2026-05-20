@@ -239,6 +239,21 @@ var encoderTests = []encoderTest{
 		output: `"0x0"`,
 	},
 	{
+		name: "hex-bigint-negative-small",
+		fn: func(b *Buffer) {
+			b.HexBigInt(big.NewInt(-1))
+		},
+		output: `"-0x1"`,
+	},
+	{
+		name: "hex-bigint-negative-large",
+		fn: func(b *Buffer) {
+			v, _ := new(big.Int).SetString("-ffeeddccbbaa99887766", 16)
+			b.HexBigInt(v)
+		},
+		output: `"-0xffeeddccbbaa99887766"`,
+	},
+	{
 		name: "value-object",
 		fn: func(b *Buffer) {
 			b.MustValue(map[string]int{"a": 1})
