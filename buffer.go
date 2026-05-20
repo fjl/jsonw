@@ -165,10 +165,12 @@ func (b *Buffer) HexBigInt(v *big.Int) {
 
 // Value appends an arbitrary value marshaled by encoding/json.
 func (b *Buffer) Value(v any) error {
-	if b.enc == nil {
+	// Init writer when b is fresh or was copied from another buffer.
+	if b.enc == nil || b.encw.buf != b {
 		b.encw = &encWriter{buf: b}
 		b.enc = json.NewEncoder(b.encw)
 	}
+
 	mark := len(b.buf)
 	b.beginValue()
 	if err := b.enc.Encode(v); err != nil {

@@ -511,6 +511,17 @@ func TestReset(t *testing.T) {
 	}
 }
 
+func TestBufferCopyAfterValue(t *testing.T) {
+	var b1 Buffer
+	b1.MustValue(1)
+	b1.Reset()
+	b2 := b1
+	b2.MustValue(42)
+	if got := string(b2.Output()); got != "42" {
+		t.Errorf("b2 output = %q, want %q", got, "42")
+	}
+}
+
 func TestOutput(t *testing.T) {
 	for _, test := range encoderTests {
 		t.Run(test.name, func(t *testing.T) {
