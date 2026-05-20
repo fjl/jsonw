@@ -369,6 +369,36 @@ var encoderTests = []encoderTest{
 		output: `{"k":7}`,
 	},
 	{
+		name: "value-retry-after-error-in-object",
+		fn: func(b *Buffer) {
+			b.Object(func() {
+				b.Key("k")
+				if err := b.Value(make(chan int)); err == nil {
+					panic("expected encode error")
+				}
+				if err := b.Value(7); err != nil {
+					panic("retry failed")
+				}
+			})
+		},
+		output: `{"k":7}`,
+	},
+	{
+		name: "value-retry-after-error-in-array",
+		fn: func(b *Buffer) {
+			b.Array(func() {
+				b.Int64(1)
+				if err := b.Value(make(chan int)); err == nil {
+					panic("expected encode error")
+				}
+				if err := b.Value(2); err != nil {
+					panic("retry failed")
+				}
+			})
+		},
+		output: `[1,2]`,
+	},
+	{
 		name: "must-value-panic",
 		fn: func(b *Buffer) {
 			b.MustValue(make(chan int))
