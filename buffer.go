@@ -2,20 +2,6 @@
 Package jsonw implements a JSON encoder.
 
 To create a JSON output, create a [Buffer] and call methods on it.
-
-	// Create the buffer. The zero value is ready to use.
-	var b jsonw.Buffer
-
-	// Encode an Object containing two keys.
-	b.Object(func () {
-		b.Key("key1")
-		b.Int64(1)
-		b.Key("key2")
-		b.String("value")
-	})
-
-	// Get the JSON.
-	b.Output()   // -> {"key1":1,"key2":"value"}
 */
 package jsonw
 
@@ -49,6 +35,13 @@ type Buffer struct {
 func (b *Buffer) Reset() {
 	b.buf = b.buf[:0]
 	b.state = initial
+}
+
+// NewBuffer creates a buffer with the given capacity.
+func NewBuffer(cap int) *Buffer {
+	return &Buffer{
+		buf: make([]byte, 0, cap),
+	}
 }
 
 // Output returns the written JSON bytes.
